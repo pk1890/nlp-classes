@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  jupyter:
+    build: .
+    container_name: jupyter
+    ports:
+      - 8888:8888
+
+    volumes:
+      - .:/app
+    networks:
+      - elk
+
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      xpack.license.self_generated.type: trial
+    networks:
+      - elk
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+        
+
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  data01:
+      driver: local
