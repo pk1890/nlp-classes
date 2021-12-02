@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  jupyter:
+    build: .
+    container_name: jupyter
+    ports:
+      - 8888:8888
+
+    volumes:
+      - ..:/app
+    networks:
+      - elk
+
+  krnnt:
+    image: djstrong/krnnt2
+    ports:
+      - 9200:9200
+    command: python3 /home/krnnt/krnnt/krnnt_serve.py /home/krnnt/krnnt/data
+    networks:
+      - elk
+      
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  data01:
+      driver: local
